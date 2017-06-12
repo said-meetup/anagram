@@ -26,14 +26,14 @@ class ViewController: UIViewController {
         }
     }
     
-    func findAnagrams(_ node: Node, in words: Array<Word>, complete: @escaping (Node) -> Void) {
+    func findAnagrams(_ word: Word, in words: Array<Word>,parent: Node?=nil, complete: @escaping (Node) -> Void) {
     // func findAnagrams(_ target: Word, in words: Array<Word>, pad: String = "") -> Node? {
         
         
         DispatchQueue.global(qos: .userInitiated).async {
       
-            let target = node.value
-            let targetCharacters = target.replacingOccurrences(of: " ", with: "").characters //.sorted()
+            
+            let targetCharacters = word.replacingOccurrences(of: " ", with: "").characters //.sorted()
             
             for candidate in words {
                 // Optimization #1
@@ -70,11 +70,17 @@ class ViewController: UIViewController {
                 
                 if matches {
                     // print("\(candidate) in \(target)")
+                    //node = team
                     
                     let child = Node(value: String(candidate))
-                    node.add(child: child)
-                    let newTarget = Node(value: String(t))
-                    self.findAnagrams(newTarget, in: words) { _ in
+                    //child = am
+                    
+                    //node.add(child: child)
+                    parent?.add(child: child)
+                    
+                    //t = te
+                    
+                    self.findAnagrams(String(t), in: words, parent: child) { _ in
                         
                     }
 
@@ -82,7 +88,7 @@ class ViewController: UIViewController {
             }
             
             DispatchQueue.main.async {
-                complete(node)
+                complete(parent!)
             }
         }
     }
@@ -91,9 +97,9 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         
         if let words = arrayFromContentsOfFileWithName(fileName: "words") {
-            
-            let node = Node(value: "meat")
-            findAnagrams(node, in: words) { node in
+            let word = "meats"
+            let node = Node(value: word)
+            findAnagrams(word, in: words, parent: node) { node in
                 print("here")
             }
             
